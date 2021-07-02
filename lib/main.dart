@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:tic_tac_toe/screens/game.dart';
-import 'package:tic_tac_toe/screens/menu.dart';
-import 'package:tic_tac_toe/themes.dart';
+import 'package:tic_tac_emo/screens/game.dart';
+import 'package:tic_tac_emo/screens/menu.dart';
+import 'package:tic_tac_emo/themes.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
         MyAppThemes.lightTheme,
         MyAppThemes.darkTheme,
       ],
-      defaultThemeId: MyAppThemes.lightThemeID,
+      defaultThemeId: MyAppThemes.darkThemeID,
       child: ThemeConsumer(
         child: Builder(
           builder: (themeContext) => MaterialApp(

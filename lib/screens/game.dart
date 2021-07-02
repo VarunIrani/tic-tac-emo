@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:tic_tac_toe/utils.dart';
+import 'package:tic_tac_emo/utils.dart';
 
-import 'package:tic_tac_toe/players.dart';
+import 'package:tic_tac_emo/players.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({Key? key}) : super(key: key);
@@ -19,6 +19,7 @@ class _GameScreenState extends State<GameScreen> {
   int playerOScore = 0;
 
   String lastMove = Players.none;
+  late ThemeData appTheme;
 
   @override
   void initState() {
@@ -28,7 +29,7 @@ class _GameScreenState extends State<GameScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData appTheme = ThemeProvider.themeOf(context).data;
+    appTheme = ThemeProvider.themeOf(context).data;
     return Scaffold(
       backgroundColor: appTheme.colorScheme.background,
       appBar: AppBar(
@@ -59,7 +60,8 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               Text(
                 'Score',
-                style: appTheme.textTheme.headline4!.copyWith(color: appTheme.colorScheme.onBackground),
+                style: appTheme.textTheme.headline4!
+                    .copyWith(color: appTheme.colorScheme.onBackground),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -69,11 +71,13 @@ class _GameScreenState extends State<GameScreen> {
                     children: [
                       Text(
                         "Player ${Players.X}",
-                        style: appTheme.textTheme.headline5!.copyWith(color: appTheme.colorScheme.onBackground),
+                        style: appTheme.textTheme.headline5!
+                            .copyWith(color: appTheme.colorScheme.onBackground),
                       ),
                       Text(
                         playerXScore.toString(),
-                        style: appTheme.textTheme.headline5!.copyWith(color: appTheme.colorScheme.onBackground),
+                        style: appTheme.textTheme.headline5!
+                            .copyWith(color: appTheme.colorScheme.onBackground),
                       ),
                     ],
                   ),
@@ -82,11 +86,13 @@ class _GameScreenState extends State<GameScreen> {
                     children: [
                       Text(
                         "Player ${Players.O}",
-                        style: appTheme.textTheme.headline5!.copyWith(color: appTheme.colorScheme.onBackground),
+                        style: appTheme.textTheme.headline5!
+                            .copyWith(color: appTheme.colorScheme.onBackground),
                       ),
                       Text(
                         playerOScore.toString(),
-                        style: appTheme.textTheme.headline5!.copyWith(color: appTheme.colorScheme.onBackground),
+                        style: appTheme.textTheme.headline5!
+                            .copyWith(color: appTheme.colorScheme.onBackground),
                       ),
                     ],
                   ),
@@ -103,7 +109,8 @@ class _GameScreenState extends State<GameScreen> {
             children: [
               Text(
                 "Player ${lastMove == Players.X ? Players.O : Players.X}'s Turn",
-                style: appTheme.textTheme.headline6!.copyWith(color: appTheme.colorScheme.onBackground),
+                style: appTheme.textTheme.headline6!
+                    .copyWith(color: appTheme.colorScheme.onBackground),
               ),
             ],
             mainAxisAlignment: MainAxisAlignment.center,
@@ -136,12 +143,15 @@ class _GameScreenState extends State<GameScreen> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           primary: color,
-          minimumSize: Size(size, size),
+          fixedSize: Size(size, size),
         ),
         onPressed: () => selectField(value, x, y),
         child: Text(
           value,
-          style: TextStyle(fontSize: 32),
+          style: TextStyle(
+            fontSize: 42,
+            color: appTheme.colorScheme.onBackground,
+          ),
         ),
       ),
     );
@@ -153,7 +163,9 @@ class _GameScreenState extends State<GameScreen> {
     } else if (value == Players.O) {
       return Color(0xffc66088);
     } else {
-      return Colors.white;
+      return appTheme.brightness == Brightness.dark
+          ? Colors.white24
+          : Colors.white;
     }
   }
 

@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:tic_tac_toe/fancy_button.dart';
-import 'package:tic_tac_toe/themes.dart';
+import 'package:tic_tac_emo/fancy_button.dart';
+import 'package:tic_tac_emo/themes.dart';
 
 class MenuScreen extends StatefulWidget {
   const MenuScreen({Key? key}) : super(key: key);
@@ -108,9 +109,14 @@ class _MenuScreenState extends State<MenuScreen> {
                       width: 30,
                     ),
                     SizedBox(
-
                       width: 200,
                       child: TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(
+                              RegExp(
+                                  "[\\s0-9a-zA-Z!@#\$%^&*()~`<>,./?'\"\\[\\]{}|\\\\-_=]"),
+                              replacementString: '')
+                        ],
                         onChanged: (value) {
                           setState(() {
                             player1 = value;
@@ -156,6 +162,12 @@ class _MenuScreenState extends State<MenuScreen> {
                     SizedBox(
                       width: 200,
                       child: TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.deny(
+                              RegExp(
+                                  "[\\s0-9a-zA-Z!@#\$%^&*()~`<>,./?'\"\\[\\]{}|\\\\-_=]"),
+                              replacementString: '')
+                        ],
                         onChanged: (value) {
                           setState(() {
                             player2 = value;

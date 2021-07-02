@@ -1,4 +1,4 @@
-# tic_tac_toe
+# tic_tac_emo
 
 A classic game
 

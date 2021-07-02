@@ -1,6 +1,5 @@
-name: tic_tac_toe
-description: A classic game
-
+name: tic_tac_emo
+description: A classic game with an Emo twist
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev

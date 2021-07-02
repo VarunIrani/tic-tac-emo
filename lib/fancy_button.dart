@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tic_tac_toe/players.dart';
+import 'package:tic_tac_emo/players.dart';
 
 class FancyButton extends StatefulWidget {
   final GlobalKey<FormState> formKey;
@@ -67,13 +67,6 @@ class _FancyButtonState extends State<FancyButton>
           width: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(100.0),
-            boxShadow: [
-              BoxShadow(
-                color: Color(0x80000000),
-                blurRadius: 12.0,
-                offset: Offset(0.0, 5.0),
-              ),
-            ],
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
