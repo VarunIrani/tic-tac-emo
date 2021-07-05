@@ -9,6 +9,7 @@ Future main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+  Players.setPlayers("🎹", "😂");
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -26,6 +27,7 @@ class _TicTacEmoState extends State<TicTacEmo> {
   final int countMatrix = 3;
   final double size = 92;
 
+  String lastMove = Players.none;
   late List<List<String>> matrix;
 
   @override
@@ -40,7 +42,7 @@ class _TicTacEmoState extends State<TicTacEmo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: getBackgroundColor(),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: Utils.modelBuilder(matrix, (x, value) => buildRow(x)),
@@ -63,18 +65,41 @@ class _TicTacEmoState extends State<TicTacEmo> {
     return Container(
       margin: EdgeInsets.all(4),
       child: ElevatedButton(
-        onPressed: () {
-          print("$x, $y");
-        },
+        onPressed: () => selectField(value, x, y),
         style: ElevatedButton.styleFrom(
           minimumSize: Size(size, size),
-          primary: Colors.white,
+          primary: getFieldColor(value),
         ),
         child: Text(
           value,
-          style: TextStyle(fontSize: 32),
+          style: TextStyle(fontSize: 42),
         ),
       ),
     );
+  }
+
+  selectField(String value, int x, int y) {
+    if (value == Players.none) {
+      final newValue = lastMove == Players.X ? Players.O: Players.X;
+      setState(() {
+        lastMove = newValue!;
+        matrix[x][y] = newValue;
+      });
+    }
+  }
+
+  Color getFieldColor(String value) {
+    if (value == Players.X) {
+      return Colors.redAccent;
+    } else if (value == Players.O) {
+      return Colors.blueAccent;
+    } else {
+      return Colors.white;
+    }
+  }
+
+  getBackgroundColor() {
+    final thisMove = lastMove == Players.X ? Players.O : Players.X;
+    return getFieldColor(thisMove!).withAlpha(150);
   }
 }
