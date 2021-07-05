@@ -11,32 +11,26 @@ Future main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return ThemeProvider(
+  runApp(
+    ThemeProvider(
       themes: [
         MyAppThemes.lightTheme,
         MyAppThemes.darkTheme,
       ],
-      defaultThemeId: MyAppThemes.darkThemeID,
+      defaultThemeId: MyAppThemes.lightThemeID,
       child: ThemeConsumer(
         child: Builder(
           builder: (themeContext) => MaterialApp(
-            title: 'Tic Tac Toe',
             debugShowCheckedModeBanner: false,
-            initialRoute: '/',
             theme: ThemeProvider.themeOf(themeContext).data,
             routes: {
-              '/': (context) => MenuScreen(),
-              '/game': (context) => GameScreen(),
+              '/': (_) => MainMenuScreen(),
+              '/game': (_) => TicTacEmo(),
             },
+            initialRoute: "/",
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }

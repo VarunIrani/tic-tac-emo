@@ -17,7 +17,7 @@ class MyAppThemes {
         secondaryVariant: Color(0xff5e112f),
         primaryVariant: Color(0xff3d0c87),
         onBackground: Colors.black87,
-        onPrimary: Colors.black87,
+        onPrimary: Colors.white,
         onSurface: Color(0xff693aac),
         onError: Colors.white,
         onSecondary: Colors.white,

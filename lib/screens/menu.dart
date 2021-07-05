@@ -1,19 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:theme_provider/theme_provider.dart';
-import 'package:tic_tac_emo/fancy_button.dart';
+import 'package:tic_tac_emo/players.dart';
 import 'package:tic_tac_emo/themes.dart';
 
-class MenuScreen extends StatefulWidget {
-  const MenuScreen({Key? key}) : super(key: key);
+class MainMenuScreen extends StatefulWidget {
+  const MainMenuScreen({Key? key}) : super(key: key);
 
   @override
-  _MenuScreenState createState() => _MenuScreenState();
+  _MainMenuScreenState createState() => _MainMenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
-  final _formKey = GlobalKey<FormState>();
+class _MainMenuScreenState extends State<MainMenuScreen> {
   final TextEditingController player1EmoController =
       new TextEditingController();
   final TextEditingController player2EmoController =
@@ -21,7 +19,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
   String player1 = '', player2 = '';
 
-  late bool isLightTheme;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void dispose() {
@@ -32,9 +30,12 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData appTheme = ThemeProvider.themeOf(context).data;
-    isLightTheme = appTheme.brightness == Brightness.dark ? false : true;
+    final ColorScheme colorScheme =
+        ThemeProvider.themeOf(context).data.colorScheme;
+    final TextTheme textTheme = ThemeProvider.themeOf(context).data.textTheme;
+    bool isLightTheme = colorScheme.brightness == Brightness.light;
     return Scaffold(
+
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -45,10 +46,10 @@ class _MenuScreenState extends State<MenuScreen> {
               children: [
                 Icon(
                   Icons.dark_mode,
-                  color: appTheme.colorScheme.onBackground,
+                  color: colorScheme.onBackground,
                 ),
                 Switch(
-                  activeColor: appTheme.colorScheme.primary,
+                  activeColor: colorScheme.primary,
                   value: isLightTheme,
                   onChanged: (bool value) {
                     if (isLightTheme)
@@ -63,34 +64,35 @@ class _MenuScreenState extends State<MenuScreen> {
                 ),
                 Icon(
                   Icons.brightness_7,
-                  color: appTheme.colorScheme.onBackground,
+                  color: colorScheme.onBackground,
                 ),
               ],
             ),
           )
         ],
       ),
-      backgroundColor: appTheme.colorScheme.background,
+      backgroundColor: colorScheme.background,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Center(
             child: Text(
               '🙌 Tic Tac Emo 🙌'.toUpperCase(),
-              style: appTheme.textTheme.headline3!
-                  .copyWith(color: appTheme.colorScheme.onBackground),
+              style: textTheme.headline4!.copyWith(
+                color: colorScheme.onBackground,
+              ),
             ),
           ),
           Form(
             key: _formKey,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Center(
                   child: Text(
                     'Type Player Emoji 👇',
-                    style: appTheme.textTheme.headline6!
-                        .copyWith(color: appTheme.colorScheme.onBackground),
+                    style: textTheme.headline5!.copyWith(
+                      color: colorScheme.onBackground,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -102,8 +104,9 @@ class _MenuScreenState extends State<MenuScreen> {
                   children: [
                     Text(
                       'Player 1',
-                      style: appTheme.textTheme.headline6!
-                          .copyWith(color: appTheme.colorScheme.onBackground),
+                      style: textTheme.headline6!.copyWith(
+                        color: colorScheme.secondary,
+                      ),
                     ),
                     SizedBox(
                       width: 30,
@@ -114,7 +117,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         inputFormatters: [
                           FilteringTextInputFormatter.deny(
                               RegExp(
-                                  "[\\s0-9a-zA-Z!@#\$%^&*()~`<>,./?'\"\\[\\]{}|\\\\-_=]"),
+                                  "[\\s0-9a-zA-Z!@#\$%^&*()~`<>,./?'\"\\[\\]{}|\\\\-_=:;]"),
                               replacementString: '')
                         ],
                         onChanged: (value) {
@@ -126,12 +129,16 @@ class _MenuScreenState extends State<MenuScreen> {
                         decoration: new InputDecoration(
                           enabledBorder: new UnderlineInputBorder(
                             borderSide: new BorderSide(
-                              color: appTheme.colorScheme.primary,
+                              color: colorScheme.onBackground,
                             ),
                           ),
                         ),
-                        style: appTheme.textTheme.headline6,
-                        cursorColor: appTheme.colorScheme.onBackground,
+                        style: textTheme.headline6!.copyWith(
+                          color: colorScheme.brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                        ),
+                        cursorColor: colorScheme.primary,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Player Emo';
@@ -153,8 +160,9 @@ class _MenuScreenState extends State<MenuScreen> {
                   children: [
                     Text(
                       'Player 2',
-                      style: appTheme.textTheme.headline6!
-                          .copyWith(color: appTheme.colorScheme.onBackground),
+                      style: textTheme.headline6!.copyWith(
+                        color: colorScheme.secondary,
+                      ),
                     ),
                     SizedBox(
                       width: 30,
@@ -165,7 +173,7 @@ class _MenuScreenState extends State<MenuScreen> {
                         inputFormatters: [
                           FilteringTextInputFormatter.deny(
                               RegExp(
-                                  "[\\s0-9a-zA-Z!@#\$%^&*()~`<>,./?'\"\\[\\]{}|\\\\-_=]"),
+                                  "[\\s0-9a-zA-Z!@#\$%^&*()~`<>,./?'\"\\[\\]{}|\\\\-_=;:]"),
                               replacementString: '')
                         ],
                         onChanged: (value) {
@@ -177,12 +185,14 @@ class _MenuScreenState extends State<MenuScreen> {
                         decoration: new InputDecoration(
                           enabledBorder: new UnderlineInputBorder(
                             borderSide: new BorderSide(
-                              color: appTheme.colorScheme.primary,
+                              color: colorScheme.onBackground,
                             ),
                           ),
                         ),
-                        style: appTheme.textTheme.headline6,
-                        cursorColor: appTheme.colorScheme.onBackground,
+                        style: textTheme.headline6!.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                        cursorColor: colorScheme.primary,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Player Emo';
@@ -198,10 +208,22 @@ class _MenuScreenState extends State<MenuScreen> {
               ],
             ),
           ),
-          FancyButton(
-            formKey: _formKey,
-            player1: player1,
-            player2: player2,
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                Players.setPlayers(player1, player2);
+                Navigator.popAndPushNamed(context, "/game");
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "Start Game",
+                style: textTheme.headline6!.copyWith(
+                  color: colorScheme.onPrimary,
+                ),
+              ),
+            ),
           ),
         ],
       ),

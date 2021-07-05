@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:theme_provider/theme_provider.dart';
+import 'package:tic_tac_emo/players.dart';
 import 'package:tic_tac_emo/utils.dart';
 
-import 'package:tic_tac_emo/players.dart';
-
-class GameScreen extends StatefulWidget {
-  const GameScreen({Key? key}) : super(key: key);
-
+class TicTacEmo extends StatefulWidget {
   @override
-  _GameScreenState createState() => _GameScreenState();
+  _TicTacEmoState createState() => _TicTacEmoState();
 }
 
-class _GameScreenState extends State<GameScreen> {
-  static final countMatrix = 3;
-  static final double size = 92;
-  late List<List<String>> matrix;
-  int playerXScore = 0;
-  int playerOScore = 0;
+class _TicTacEmoState extends State<TicTacEmo> {
+  final int countMatrix = 3;
+  final double size = 92;
+  int player1Score = 0, player2Score = 0;
 
   String lastMove = Players.none;
-  late ThemeData appTheme;
+  late List<List<String>> matrix;
+  late ColorScheme colorScheme;
 
   @override
   void initState() {
@@ -27,107 +23,83 @@ class _GameScreenState extends State<GameScreen> {
     setEmptyFields();
   }
 
+  void setEmptyFields() => setState(() => matrix = List.generate(
+      countMatrix, (_) => List.generate(countMatrix, (_) => Players.none)));
+
   @override
   Widget build(BuildContext context) {
-    appTheme = ThemeProvider.themeOf(context).data;
+    colorScheme = ThemeProvider.themeOf(context).data.colorScheme;
+    final TextTheme textTheme = ThemeProvider.themeOf(context).data.textTheme;
     return Scaffold(
-      backgroundColor: appTheme.colorScheme.background,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        centerTitle: true,
-        title: Text(
-          "🙌 Tic Tac Emo 🙌".toUpperCase(),
-          style: TextStyle(
-            color: appTheme.colorScheme.onBackground,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).popAndPushNamed("/");
+          },
+          icon: Icon(
+            Icons.arrow_back_outlined,
+            color: colorScheme.secondary,
           ),
         ),
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: appTheme.colorScheme.onBackground,
-          ),
-          onPressed: () {
-            Navigator.of(context).popAndPushNamed('/');
-          },
-        ),
       ),
+      backgroundColor: colorScheme.background,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text(
-                'Score',
-                style: appTheme.textTheme.headline4!
-                    .copyWith(color: appTheme.colorScheme.onBackground),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Player ${Players.X}",
-                        style: appTheme.textTheme.headline5!
-                            .copyWith(color: appTheme.colorScheme.onBackground),
-                      ),
-                      Text(
-                        playerXScore.toString(),
-                        style: appTheme.textTheme.headline5!
-                            .copyWith(color: appTheme.colorScheme.onBackground),
-                      ),
-                    ],
+                  Text(
+                    "Player ${Players.X}",
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
                   ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Player ${Players.O}",
-                        style: appTheme.textTheme.headline5!
-                            .copyWith(color: appTheme.colorScheme.onBackground),
-                      ),
-                      Text(
-                        playerOScore.toString(),
-                        style: appTheme.textTheme.headline5!
-                            .copyWith(color: appTheme.colorScheme.onBackground),
-                      ),
-                    ],
+                  Text(
+                    player1Score.toString(),
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Player ${Players.O}",
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
+                  ),
+                  Text(
+                    player2Score.toString(),
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
                   ),
                 ],
               ),
             ],
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: Utils.modelBuilder(matrix, (x, value) => buildRow(x)),
           ),
-          Row(
-            children: [
-              Text(
-                "Player ${lastMove == Players.X ? Players.O : Players.X}'s Turn",
-                style: appTheme.textTheme.headline6!
-                    .copyWith(color: appTheme.colorScheme.onBackground),
-              ),
-            ],
-            mainAxisAlignment: MainAxisAlignment.center,
+          Center(
+            child: Text(
+              "Player ${lastMove == Players.X ? Players.O : Players.X}'s Turn",
+              style: textTheme.headline6!
+                  .copyWith(color: colorScheme.secondary),
+            ),
           ),
         ],
       ),
     );
   }
 
-  void setEmptyFields() => setState(
-        () => matrix = List.generate(
-          countMatrix,
-          (_) => List.generate(countMatrix, (_) => Players.none),
-        ),
-      );
-
-  Widget buildRow(int x) {
+  buildRow(int x) {
     final values = matrix[x];
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -135,26 +107,44 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  Widget buildField(int x, int y) {
+  buildField(int x, int y) {
+    // Player
     final value = matrix[x][y];
-    Color color = getFieldColor(value);
+
     return Container(
       margin: EdgeInsets.all(4),
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          primary: color,
-          fixedSize: Size(size, size),
-        ),
         onPressed: () => selectField(value, x, y),
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(size, size),
+          primary: getFieldColor(value),
+        ),
         child: Text(
           value,
-          style: TextStyle(
-            fontSize: 42,
-            color: appTheme.colorScheme.onBackground,
-          ),
+          style: TextStyle(fontSize: 42),
         ),
       ),
     );
+  }
+
+  selectField(String value, int x, int y) {
+    if (value == Players.none) {
+      final newValue = lastMove == Players.X ? Players.O : Players.X;
+      setState(() {
+        lastMove = newValue!;
+        matrix[x][y] = newValue;
+      });
+    }
+
+    if (isWinner(x, y)) {
+      if (lastMove == Players.X)
+        player1Score++;
+      else if (lastMove == Players.O) player2Score++;
+
+      showEndDialog("Player $lastMove Won!");
+    } else if (isDrawGame()) {
+      showEndDialog("Undecided Game");
+    }
   }
 
   Color getFieldColor(String value) {
@@ -163,87 +153,69 @@ class _GameScreenState extends State<GameScreen> {
     } else if (value == Players.O) {
       return Color(0xffc66088);
     } else {
-      return appTheme.brightness == Brightness.dark
+      return colorScheme.brightness == Brightness.dark
           ? Colors.white24
           : Colors.white;
     }
   }
 
-  Color getBackgroundColor() {
+  getBackgroundColor() {
     final thisMove = lastMove == Players.X ? Players.O : Players.X;
     return getFieldColor(thisMove!).withAlpha(150);
   }
 
-  void selectField(String value, int x, int y) {
-    if (value == Players.none) {
-      final newValue = lastMove == Players.X ? Players.O : Players.X;
-      setState(() {
-        lastMove = newValue!;
-        matrix[x][y] = newValue;
-      });
-
-      if (isWinner(x, y)) {
-        newValue == Players.X ? playerXScore++ : playerOScore++;
-        showEndDialog('Player $newValue Won!');
-      } else if (isEnd()) {
-        showEndDialog('Undecided Game');
-      }
-    }
+  Future showEndDialog(String title) async {
+    return showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text("Would you like to play again or reset the score?"),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setEmptyFields();
+              Navigator.of(context).pop();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Play Again"),
+            ),
+          ),
+          TextButton(
+            onPressed: () {
+              setEmptyFields();
+              resetScores();
+              Navigator.of(context).pop();
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("Reset Score"),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  Future showEndDialog(String title) => showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          title: Text(title),
-          content:
-              Text('Would you like to reset the score or continue playing?'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                setEmptyFields();
-                Navigator.of(context).pop();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Play Again',
-                ),
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                setEmptyFields();
-                playerXScore = 0;
-                playerOScore = 0;
-                Navigator.of(context).pop();
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  'Reset Score',
-                ),
-              ),
-            )
-          ],
-        ),
-      );
-
   bool isWinner(int x, int y) {
-    var col = 0, row = 0, diag = 0, rDiag = 0;
+    int row = 0, col = 0, diag = 0, rdiag = 0;
+
     final player = matrix[x][y];
     final n = countMatrix;
 
     for (int i = 0; i < n; i++) {
-      if (matrix[x][i] == player) col++;
-      if (matrix[i][y] == player) row++;
+      if (matrix[x][i] == player) row++;
+      if (matrix[i][y] == player) col++;
       if (matrix[i][i] == player) diag++;
-      if (matrix[i][n - i - 1] == player) rDiag++;
+      if (matrix[i][n - i - 1] == player) rdiag++;
     }
 
-    return col == n || row == n || diag == n || rDiag == n;
+    return row == n || col == n || diag == n || rdiag == n;
   }
 
-  bool isEnd() =>
+  bool isDrawGame() =>
       matrix.every((row) => row.every((value) => value != Players.none));
+
+  void resetScores() => setState(() => {player1Score = 0, player2Score = 0});
 }
