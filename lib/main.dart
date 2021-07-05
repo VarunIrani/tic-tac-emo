@@ -26,6 +26,7 @@ class TicTacEmo extends StatefulWidget {
 class _TicTacEmoState extends State<TicTacEmo> {
   final int countMatrix = 3;
   final double size = 92;
+  int player1Score = 0, player2Score = 0;
 
   String lastMove = Players.none;
   late List<List<String>> matrix;
@@ -44,8 +45,50 @@ class _TicTacEmoState extends State<TicTacEmo> {
     return Scaffold(
       backgroundColor: getBackgroundColor(),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: Utils.modelBuilder(matrix, (x, value) => buildRow(x)),
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Player ${Players.X}",
+                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  ),
+                  Text(
+                    player1Score.toString(),
+                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  ),
+                ],
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Player ${Players.O}",
+                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  ),
+                  Text(
+                    player2Score.toString(),
+                    style: TextStyle(fontSize: 22, color: Colors.white),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: Utils.modelBuilder(matrix, (x, value) => buildRow(x)),
+          ),
+          Center(
+            child: Text(
+              "Player ${lastMove == Players.X ? Players.O : Players.X}'s Turn",
+              style: TextStyle(fontSize: 22, color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -88,6 +131,10 @@ class _TicTacEmoState extends State<TicTacEmo> {
     }
 
     if (isWinner(x, y)) {
+      if (lastMove == Players.X)
+        player1Score++;
+      else if (lastMove == Players.O) player2Score++;
+
       showEndDialog("Player $lastMove Won!");
     } else if (isDrawGame()) {
       showEndDialog("Undecided Game");
@@ -129,7 +176,8 @@ class _TicTacEmoState extends State<TicTacEmo> {
           ),
           TextButton(
             onPressed: () {
-              // TODO: Reset Score
+              setEmptyFields();
+              resetScores();
               Navigator.of(context).pop();
             },
             child: Padding(
@@ -160,4 +208,6 @@ class _TicTacEmoState extends State<TicTacEmo> {
 
   bool isDrawGame() =>
       matrix.every((row) => row.every((value) => value != Players.none));
+
+  void resetScores() => setState(() => {player1Score = 0, player2Score = 0});
 }
