@@ -89,6 +89,8 @@ class _TicTacEmoState extends State<TicTacEmo> {
 
     if (isWinner(x, y)) {
       showEndDialog("Player $lastMove Won!");
+    } else if (isDrawGame()) {
+      showEndDialog("Undecided Game");
     }
   }
 
@@ -155,4 +157,7 @@ class _TicTacEmoState extends State<TicTacEmo> {
 
     return row == n || col == n || diag == n || rdiag == n;
   }
+
+  bool isDrawGame() =>
+      matrix.every((row) => row.every((value) => value != Players.none));
 }
