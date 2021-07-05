@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:tic_tac_emo/players.dart';
 import 'package:tic_tac_emo/utils.dart';
 
@@ -14,6 +15,7 @@ class _TicTacEmoState extends State<TicTacEmo> {
 
   String lastMove = Players.none;
   late List<List<String>> matrix;
+  late ColorScheme colorScheme;
 
   @override
   void initState() {
@@ -26,6 +28,8 @@ class _TicTacEmoState extends State<TicTacEmo> {
 
   @override
   Widget build(BuildContext context) {
+    colorScheme = ThemeProvider.themeOf(context).data.colorScheme;
+    final TextTheme textTheme = ThemeProvider.themeOf(context).data.textTheme;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -33,11 +37,14 @@ class _TicTacEmoState extends State<TicTacEmo> {
           onPressed: () {
             Navigator.of(context).popAndPushNamed("/");
           },
-          icon: Icon(Icons.arrow_back_outlined),
+          icon: Icon(
+            Icons.arrow_back_outlined,
+            color: colorScheme.secondary,
+          ),
         ),
         elevation: 0,
       ),
-      backgroundColor: getBackgroundColor(),
+      backgroundColor: colorScheme.background,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -49,11 +56,13 @@ class _TicTacEmoState extends State<TicTacEmo> {
                 children: [
                   Text(
                     "Player ${Players.X}",
-                    style: TextStyle(fontSize: 22, color: Colors.white),
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
                   ),
                   Text(
                     player1Score.toString(),
-                    style: TextStyle(fontSize: 22, color: Colors.white),
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
                   ),
                 ],
               ),
@@ -62,11 +71,13 @@ class _TicTacEmoState extends State<TicTacEmo> {
                 children: [
                   Text(
                     "Player ${Players.O}",
-                    style: TextStyle(fontSize: 22, color: Colors.white),
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
                   ),
                   Text(
                     player2Score.toString(),
-                    style: TextStyle(fontSize: 22, color: Colors.white),
+                    style: textTheme.headline5!
+                        .copyWith(color: colorScheme.onBackground),
                   ),
                 ],
               ),
@@ -79,7 +90,8 @@ class _TicTacEmoState extends State<TicTacEmo> {
           Center(
             child: Text(
               "Player ${lastMove == Players.X ? Players.O : Players.X}'s Turn",
-              style: TextStyle(fontSize: 22, color: Colors.white),
+              style: textTheme.headline6!
+                  .copyWith(color: colorScheme.secondary),
             ),
           ),
         ],
@@ -137,11 +149,13 @@ class _TicTacEmoState extends State<TicTacEmo> {
 
   Color getFieldColor(String value) {
     if (value == Players.X) {
-      return Colors.redAccent;
+      return Color(0xffac89de);
     } else if (value == Players.O) {
-      return Colors.blueAccent;
+      return Color(0xffc66088);
     } else {
-      return Colors.white;
+      return colorScheme.brightness == Brightness.dark
+          ? Colors.white24
+          : Colors.white;
     }
   }
 

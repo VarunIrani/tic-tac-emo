@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:theme_provider/theme_provider.dart';
 import 'package:tic_tac_emo/players.dart';
+import 'package:tic_tac_emo/themes.dart';
 
 class MainMenuScreen extends StatefulWidget {
   const MainMenuScreen({Key? key}) : super(key: key);
@@ -28,15 +30,57 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme =
+        ThemeProvider.themeOf(context).data.colorScheme;
+    final TextTheme textTheme = ThemeProvider.themeOf(context).data.textTheme;
+    bool isLightTheme = colorScheme.brightness == Brightness.light;
     return Scaffold(
-      backgroundColor: Colors.white,
+
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20.0),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.dark_mode,
+                  color: colorScheme.onBackground,
+                ),
+                Switch(
+                  activeColor: colorScheme.primary,
+                  value: isLightTheme,
+                  onChanged: (bool value) {
+                    if (isLightTheme)
+                      ThemeProvider.controllerOf(context)
+                          .setTheme(MyAppThemes.darkThemeID);
+                    else
+                      ThemeProvider.controllerOf(context)
+                          .setTheme(MyAppThemes.lightThemeID);
+
+                    isLightTheme = !isLightTheme;
+                  },
+                ),
+                Icon(
+                  Icons.brightness_7,
+                  color: colorScheme.onBackground,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+      backgroundColor: colorScheme.background,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Center(
             child: Text(
               '🙌 Tic Tac Emo 🙌'.toUpperCase(),
-              style: TextStyle(fontSize: 32),
+              style: textTheme.headline4!.copyWith(
+                color: colorScheme.onBackground,
+              ),
             ),
           ),
           Form(
@@ -46,7 +90,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                 Center(
                   child: Text(
                     'Type Player Emoji 👇',
-                    style: TextStyle(fontSize: 22),
+                    style: textTheme.headline5!.copyWith(
+                      color: colorScheme.onBackground,
+                    ),
                   ),
                 ),
                 SizedBox(
@@ -58,7 +104,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                   children: [
                     Text(
                       'Player 1',
-                      style: TextStyle(fontSize: 22),
+                      style: textTheme.headline6!.copyWith(
+                        color: colorScheme.secondary,
+                      ),
                     ),
                     SizedBox(
                       width: 30,
@@ -81,17 +129,16 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                         decoration: new InputDecoration(
                           enabledBorder: new UnderlineInputBorder(
                             borderSide: new BorderSide(
-                              color: Colors.black,
-                            ),
-                          ),
-                          focusedBorder: new UnderlineInputBorder(
-                            borderSide: new BorderSide(
-                              color: Colors.black,
+                              color: colorScheme.onBackground,
                             ),
                           ),
                         ),
-                        style: TextStyle(fontSize: 22),
-                        cursorColor: Colors.black,
+                        style: textTheme.headline6!.copyWith(
+                          color: colorScheme.brightness == Brightness.light
+                              ? Colors.black
+                              : Colors.white,
+                        ),
+                        cursorColor: colorScheme.primary,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Player Emo';
@@ -113,7 +160,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                   children: [
                     Text(
                       'Player 2',
-                      style: TextStyle(fontSize: 22),
+                      style: textTheme.headline6!.copyWith(
+                        color: colorScheme.secondary,
+                      ),
                     ),
                     SizedBox(
                       width: 30,
@@ -136,17 +185,14 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
                         decoration: new InputDecoration(
                           enabledBorder: new UnderlineInputBorder(
                             borderSide: new BorderSide(
-                              color: Colors.black,
-                            ),
-                          ),
-                          focusedBorder: new UnderlineInputBorder(
-                            borderSide: new BorderSide(
-                              color: Colors.black,
+                              color: colorScheme.onBackground,
                             ),
                           ),
                         ),
-                        style: TextStyle(fontSize: 22),
-                        cursorColor: Colors.black,
+                        style: textTheme.headline6!.copyWith(
+                          color: colorScheme.onSurface,
+                        ),
+                        cursorColor: colorScheme.primary,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter Player Emo';
@@ -173,7 +219,9 @@ class _MainMenuScreenState extends State<MainMenuScreen> {
               padding: const EdgeInsets.all(20.0),
               child: Text(
                 "Start Game",
-                style: TextStyle(fontSize: 22),
+                style: textTheme.headline6!.copyWith(
+                  color: colorScheme.onPrimary,
+                ),
               ),
             ),
           ),
